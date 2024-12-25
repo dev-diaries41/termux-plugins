@@ -1,0 +1,12 @@
+#!/data/data/com.termux/files/usr/bin/sh
+
+# Set the directory to monitor
+DIR=/sdcard/Pictures/Screenshots
+
+# ls -l /sdcard/Pictures/Screenshots
+
+# Set the command to execute when a new file is created
+CMD="echo 'New screenshot detected!'"
+
+# Use watchexec to monitor the directory
+watchexec --debounce 2000 -w "$DIR" -e png,jpg,jpeg $CMDS
