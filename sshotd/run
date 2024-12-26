@@ -2,14 +2,11 @@
 
 # Set the directory to monitor
 DIR=/sdcard/Pictures/Screenshots
-USR_PREFIX="/data/data/com.termux/files/usr"
-SERVICE_DIR="$USR_PREFIX/var/service"
-PLUGIN_DIR="$SERVICE_DIR/tagd/plugin/"
 
 # ls -l /sdcard/Pictures/Screenshots
 
 # Set the command to execute when a new file is created
-CMD="python3 $PLUGIN_DIR/main.py"
+CMD="echo 'New screenshot detected!'"
 
 # Use watchexec to monitor the directory
-watchexec --debounce 2000 -w "$DIR" -e png,jpg,jpeg $CMDS
+watchexec --debounce 2000 -w "$DIR" -e png,jpg,jpeg $CMD
