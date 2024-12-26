@@ -1,7 +1,0 @@
-# plugin.yml
-
-dependencies:
-  - name: exiftool        # For image metadata management
-    description: A tool for reading, writing, and editing metadata
-  - name: watchexec       # For triggering actions on file changes
-    description: A simple tool for executing commands based on filesystem changes
