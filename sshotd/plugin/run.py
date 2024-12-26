@@ -1,7 +1,7 @@
 import os
 
 # Path to the state file
-STATE_FILE = "./state.txt"
+STATE_FILE = "./plugin/state.txt"
 
 # Default values
 DEFAULT_THRESHOLD = 2
