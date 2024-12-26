@@ -11,10 +11,10 @@ STATE_FILE="./plugin/state.txt"
 
 # Function to reset the counter
 reset_counter() {
-    echo "Resetting counter..."
+    # echo "Resetting counter..."
     echo "COUNTER=0" > "$STATE_FILE"
     echo "THRESHOLD=5" >> "$STATE_FILE"
-    echo "Counter has been reset."
+    # echo "Counter has been reset."
 }
 
 # Reset the counter every time the service is enabled
@@ -22,4 +22,4 @@ reset_counter
 
 
 # Use watchexec to monitor the directory
-exec watchexec --debounce 2000 -w "$DIR" -e png,jpg,jpeg -- "$CMD"
+exec watchexec -p -d 2000 -w "$DIR" -e png,jpg,jpeg --fs-events create -- "$CMD"

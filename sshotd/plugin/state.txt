@@ -1,2 +1,0 @@
-# This is the screenshot threshold to trigger action
-NUM_SCREENSHOTS=5
