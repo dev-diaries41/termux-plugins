@@ -2,4 +2,3 @@
 
 dependencies:
   - name: watchexec       # For triggering actions on file changes
-    description: A simple tool for executing commands based on filesystem changes
