@@ -51,7 +51,7 @@ function onMessage(message, bot) {
   try {
     if (!message.text) return;
 
-    exec(`termux-notification --id "telegram_${message.chat.id}" --title "New Telegram Message_${message.from?.username||message.chat.id}" --content "${message.text}" --button1 "Reply" --button1-action "${SCRIPT_DIR}/bot.js reply ${message.chat.id} ${message.from?.username||''}"`, (error, stdout, stderr) => {
+    exec(`termux-notification --id "telegram_${message.chat.id}" --title "New Telegram Message_${message.from?.username||message.chat.id}" --content "${message.text}" --button1 "Reply" --button1-action "node ${SCRIPT_DIR}/bot.js reply ${message.chat.id} ${message.from?.username||''}"`, (error, stdout, stderr) => {
       if (error) {
         console.error(`Error executing termux-notification: ${error.message}`);
         return;
