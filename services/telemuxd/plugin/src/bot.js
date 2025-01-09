@@ -53,7 +53,7 @@ function onMessage(message, bot) {
   try {
     if (!message.text) return;
 
-    exec(`termux-notification --id "telegram_${message.chat.id}" --title "New Telegram Message_${message.from?.username||message.chat.id}" --content "${message.text}" --button1 "Reply" --button1-action "node ${SCRIPT_DIR}/bot.js reply ${message.chat.id} ${message.from?.username||''}"`, (error, stdout, stderr) => {
+    exec(`termux-notification --id "telegram_${message.chat.id}" --title "New Telegram Message_${message.from?.username||message.chat.id}" --content "${message.text}" --button1 "Reply" --button1-action "node ${SCRIPT_DIR}/cli.js reply ${message.chat.id} ${message.from?.username||''}"`, (error, stdout, stderr) => {
       if (error) {
         console.error(`Error executing termux-notification: ${error.message}`);
         return;
@@ -108,29 +108,5 @@ class Bot extends TelegramBot {
   }
 }
 
-const bot = getBot();
 
-const args = process.argv.slice(2);
-
-if (args.length > 0) {
-  const command = args[0];
-
-  switch (command) {
-    case "reply":
-      if (args.length < 2) {
-        console.error("Usage: bot.js reply <chatId> [username]");
-        process.exit(1);
-      }
-      const chatId = args[1];
-      const username = args[2] || null; // if username defined
-      onReply(chatId, username);
-      break;
-
-    default:
-      console.error(`Unknown command: ${command}`);
-      process.exit(1);
-  }
-}
-
-
-module.exports = { bot, getEventHandlers, getBot };
+module.exports = { getEventHandlers, getBot };
