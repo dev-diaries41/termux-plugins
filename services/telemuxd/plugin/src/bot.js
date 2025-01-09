@@ -14,6 +14,8 @@ const SCRIPT_DIR = path.dirname(__filename);
 
 async function onReply(chatId, username) {
   try {
+    const bot = getBot(); 
+
     const reply = await new Promise((resolve, reject) => {
       exec(`termux-dialog text -t "Reply to ${username || chatId}" -i "Type your message..."`, (error, stdout, stderr) => {
         if (error) {
@@ -36,7 +38,6 @@ async function onReply(chatId, username) {
     try {
       const response = JSON.parse(reply);
       const message = response.text;
-      const bot = getBot()
       await bot.sendMessage(chatId, message);
     } catch (err) {
       console.error(`JSON parsing error: ${err}`);
@@ -46,6 +47,7 @@ async function onReply(chatId, username) {
     console.error(err.message);
   }
 }
+
 
 function onMessage(message, bot) {
   try {
