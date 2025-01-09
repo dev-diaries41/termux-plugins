@@ -3,28 +3,61 @@ const { exec } = require("child_process");
 const path = require('path');
 
 let botInstance = null;
-const TELEGRAM_BOT_TOKEN = "";
+const TELEGRAM_BOT_TOKEN = "<YOUR_TOKEN_HERE>";
 
 const BotConfig = {
   token: TELEGRAM_BOT_TOKEN,
   opts: { polling: true }
 };
 
-async function handleMessage(message, bot) {
+const SCRIPT_DIR = path.dirname(__filename);
+
+async function onReply(chatId, username) {
+  try {
+    const reply = await new Promise((resolve, reject) => {
+      exec(`termux-dialog text -t "Reply to ${username || chatId}" -i "Type your message..."`, (error, stdout, stderr) => {
+        if (error) {
+          reject(new Error(`Error executing termux-dialog: ${error.message}`));
+          return;
+        }
+        if (stderr) {
+          reject(new Error(`Dialog error: ${stderr}`));
+          return;
+        }
+        resolve(stdout.trim());
+      });
+    });
+
+    if (reply === "") {
+      exec("termux-toast 'Reply canceled or empty!'");
+      return;
+    }
+
+    try {
+      const response = JSON.parse(reply);
+      const message = response.text;
+      const bot = getBot()
+      await bot.sendMessage(chatId, message);
+    } catch (err) {
+      console.error(`JSON parsing error: ${err}`);
+    }
+
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+
+function onMessage(message, bot) {
   try {
     if (!message.text) return;
 
-    const scriptPath = path.join(__dirname, 'messenger.sh');
-    const command = `sh ${scriptPath} onMessage "${message.chat.id}" "${message.text}"`;
-
-    exec(command, (error, stdout, stderr) => {
+    exec(`termux-notification --id "telegram_${message.chat.id}" --title "New Telegram Message_${message.from?.username||message.chat.id}" --content "${message.text}" --button1 "Reply" --button1-action "${SCRIPT_DIR}/bot.js reply ${message.chat.id} ${message.from?.username||''}"`, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Error executing messenger.sh: ${error.message}`);
+        console.error(`Error executing termux-notification: ${error.message}`);
         return;
       }
       if (stderr) {
-        console.error(`Script error output: ${stderr}`);
-        return;
+        console.error(`Notification error: ${stderr}`);
       }
     });
   } catch (error) {
@@ -32,14 +65,14 @@ async function handleMessage(message, bot) {
   }
 }
 
-async function handlePollingError(error) {
+function onPollingError(error) {
   console.error(`Polling error: ${error.message}`);
 }
 
 function getEventHandlers(bot) {
   return [
-    { event: 'message', handler: (message) => handleMessage(message, bot) },
-    { event: 'polling_error', handler: (error) => handlePollingError(error) }
+    { event: 'message', handler: (message) => onMessage(message, bot) },
+    { event: 'polling_error', handler: (error) => onPollingError(error) }
   ];
 }
 
@@ -73,30 +106,22 @@ class Bot extends TelegramBot {
   }
 }
 
-// Initialize bot instance
 const bot = getBot();
+
 const args = process.argv.slice(2);
 
 if (args.length > 0) {
   const command = args[0];
 
   switch (command) {
-    case "send":
-      if (args.length < 3) {
-        console.error("Usage: bot.js send <chatId> <message>");
+    case "reply":
+      if (args.length < 2) {
+        console.error("Usage: bot.js reply <chatId> [username]");
         process.exit(1);
       }
       const chatId = args[1];
-      const message = args.slice(2).join(" ");
-      bot.sendMessage(chatId, message)
-        .then(() => {
-          console.log(`Message sent to ${chatId}: ${message}`);
-          process.exit(0);
-        })
-        .catch((err) => {
-          console.error("Error sending message:", err);
-          process.exit(1);
-        });
+      const username = args[2] || null; // if username defined
+      onReply(chatId, username);
       break;
 
     default:
@@ -104,5 +129,6 @@ if (args.length > 0) {
       process.exit(1);
   }
 }
+
 
 module.exports = { bot, getEventHandlers, getBot };
