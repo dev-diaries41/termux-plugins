@@ -10,7 +10,7 @@ Each plugin in this repository follows the directory structure below:
 my_plugin/
   ├── run               # Executable bash script for starting the service
   ├── plugin/           # Optional additional scripts (Python, Bash, etc.) for the service
-  ├── plugin.yml        # YAML file listing Termux dependencies and configuration
+  ├── plugin.txt        # Txt file listing Termux dependencies
 ```
 
 ### Explanation of Files
@@ -19,14 +19,13 @@ my_plugin/
 
 - **plugin/**: A directory that contains any additional scripts (Bash, Python, etc.) needed by the service. This is optional and only necessary if the service has dependencies beyond the `run` script.
 
-- **plugin.yml**: A YAML file that lists the Termux dependencies and configuration settings required for the service. It also includes metadata about the plugin, such as its name, description, and required packages.
+- **plugin.txt**: A text file that lists the Termux dependencies required for the plugin.
 
-### Example `plugin.yml`
+### Example `plugin.txt`
 
 Here is an example of a `plugin.yml` file for a plugin:
 
 ```yaml
-dependencies:
-  - name: watchexec       # For triggering actions on file changes
+watchexec       # For triggering actions on file changes
 
 ```

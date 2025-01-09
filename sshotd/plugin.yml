@@ -1,4 +1,0 @@
-# plugin.yml
-
-dependencies:
-  - name: watchexec       # For triggering actions on file changes
