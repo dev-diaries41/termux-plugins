@@ -1,3 +1,0 @@
-#!/data/data/com.termux/files/usr/bin/sh
-
-exec node ./plugin/run.js
