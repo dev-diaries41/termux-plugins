@@ -2,6 +2,7 @@ const express = require('express');
 const { exec } = require("child_process");
 const axios = require('axios');
 const TelegramBot = require('node-telegram-bot-api');
+const fs = require('fs'); 
 
 const app = express();
 const PORT = 3000;
@@ -10,7 +11,32 @@ const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true });
 
 app.use(express.json());
 
-let lastUpdateId = 0;  // Variable to track the last update ID
+const POLL_INTERVAL = 60000;
+const LAST_UPDATE_FILE = 'lastUpdate.txt';
+
+let lastUpdateId = 0;
+
+function readLastUpdateId() {
+  try {
+    if (fs.existsSync(LAST_UPDATE_FILE)) {
+      const data = fs.readFileSync(LAST_UPDATE_FILE, 'utf8');
+      return parseInt(data.trim()) || 0;
+    }
+  } catch (err) {
+    console.error(`Error reading last update ID file: ${err.message}`);
+  }
+  return 0; 
+}
+
+function writeLastUpdateId(id) {
+  try {
+    fs.writeFileSync(LAST_UPDATE_FILE, id.toString());
+  } catch (err) {
+    console.error(`Error writing last update ID to file: ${err.message}`);
+  }
+}
+
+lastUpdateId = readLastUpdateId();
 
 function onMessage(message) {
   try {
@@ -28,7 +54,7 @@ function onMessage(message) {
   }
 }
 
-// Polling the Telegram API for updates every 10 seconds
+// Polling the Telegram API for updates every POLL_INTERVAL (ms). The bot.on("message") listener was not working effectively so this is a workaround.
 setInterval(async () => {
   try {
     const updates = await bot.getUpdates({ offset: lastUpdateId + 1, allowed_updates: ["message"] });
@@ -39,13 +65,14 @@ setInterval(async () => {
           onMessage(update.message);
         }
       });
+      writeLastUpdateId(lastUpdateId);
     }
   } catch (err) {
     console.error(`Error in setInterval polling: ${err.message}`);
   }
-}, 10000); // Poll every 10 seconds
+}, POLL_INTERVAL);
 
-app.post('/rreply', async (req, res) => {
+app.post('/reply', async (req, res) => {
   try {
     const { chatId, message } = req.body;
     if (!chatId || !message) {
@@ -54,7 +81,7 @@ app.post('/rreply', async (req, res) => {
     await bot.sendMessage(chatId, message);
     res.status(200).send({ success: true });
   } catch (err) {
-    console.error(`Error in /rreply: ${err.message}`);
+    console.error(`Error in /reply: ${err.message}`);
     res.status(500).send({ error: 'Failed to send message.' });
   }
 });
@@ -74,7 +101,7 @@ app.post('/start-dialog', async (req, res) => {
       const message = response.text;
       const payload = { chatId, message };
       try {
-        await axios.post(`http://localhost:${PORT}/rreply`, payload);
+        await axios.post(`http://localhost:${PORT}/reply`, payload);
       } catch (err) {
         console.error(`Error sending reply: ${err?.message}`);
       }
