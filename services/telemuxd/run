@@ -2,6 +2,4 @@
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
-pm2 start "$SCRIPT_DIR/plugin/run.js" --name "telemux"
-
-pm2 save
+exec node "$SCRIPT_DIR/plugin/run.js"

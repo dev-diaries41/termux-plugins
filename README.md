@@ -1,12 +1,13 @@
 # Termux-Plugins  
+
 This repository contains a collection of **Plugins** for Termux, which can be categorized into two types:  
 
 1. **Plugin-Services**: Custom background services that can be managed via Termux's service management system.  
-2. **Plugin-Scripts**: User-defined executable scripts that can be run directly from the local directory.  
+2. **Plugin-Scripts**: Executable scripts that can be run directly from the local directory.  
 
 Plugins can be managed using the `tplug` CLI tool. For instructions on how to install and use `tplug`, visit the [tplug repository](https://github.com/dev-diaries41/termux-plugin-cli.git).  
 
-> **Note:** To use Plugin-Services, ensure that **termux-services** is installed in your Termux environment. This dependency is not included in the `plugin.txt` files for Plugin-Services, as it is assumed to already be installed by users who need service-related functionality.  
+> **Note:** To use Plugin-Services, ensure that **termux-services** is installed in your Termux environment. This dependency is not included in the `plugin.txt` files for Plugin-Services, as it is assumed to already be installed by users who need service-related functionality. For more information on **termux-services** and relevant usage, read the [Termux Wiki - Termux-services](https://wiki.termux.com/wiki/Termux-services).   
 
 ---
 
@@ -56,7 +57,9 @@ nodejs-lts
 
 ## Installing Plugins  
 
-Plugins can be installed using the `tplug` CLI tool. The following commands are available for installing plugins:  
+You can install plugins by cloning this repository or using the tplug CLI tool. While cloning is an option, using tplug is strongly recommended for easier management and installation of plugins.
+
+Plugins can be installed using the `tplug` CLI tool. The following commands can be used for installing plugins:  
 
 1. **`install [<name> | -a] [-s | -r]`**  
    Install plugin-services or plugin-scripts from the repository.  
