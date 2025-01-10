@@ -7,11 +7,16 @@
     "dev": "node src/run.js",
     "start": "node src/run.js"
   },
-  "keywords": ["telegram", "bot", "node"],
+  "keywords": [
+    "telegram",
+    "bot",
+    "node"
+  ],
   "author": "",
   "license": "ISC",
-  "devDependencies": {},
   "dependencies": {
+    "axios": "^1.7.9",
+    "express": "^4.21.2",
     "node-telegram-bot-api": "^0.66.0"
   }
 }
