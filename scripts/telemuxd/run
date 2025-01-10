@@ -1,5 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/sh
 
-pm2 start ./plugin/run.js --name "telemux"
+SCRIPT_DIR=$(dirname "$(realpath "$0")")
+
+pm2 start "$SCRIPT_DIR/run.js" --name "telemux"
 
 pm2 save
