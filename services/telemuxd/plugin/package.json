@@ -1,11 +1,11 @@
 {
   "name": "telemuxd",
   "version": "1.0.0",
-  "main": "run.js",
+  "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "node src/run.js",
-    "start": "node src/run.js"
+    "dev": "node index.js",
+    "start": "node index.js"
   },
   "keywords": [
     "telegram",
