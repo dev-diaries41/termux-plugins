@@ -35,6 +35,7 @@ bot.on('text', (msg) => {
     const chatId = msg.chat.id;
     const username = msg.from?.username || chatId;
     const text = msg.text;
+    console.log("New message: ", username, chatId, text);
 
     messageQueue.push({ chatId, username, text });
 
@@ -58,6 +59,7 @@ app.post('/start-dialog', async (req, res) => {
       const response = JSON.parse(stdout.trim());
       const message = response.text;
       await bot.sendMessage(chatId, message);
+      console.log("Reply sent: ", username, chatId, message);
       res.status(200).send({ success: true });
     });
   } catch (err) {
